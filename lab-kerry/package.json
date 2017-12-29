@@ -1,0 +1,42 @@
+{
+  "name": "21-back-end-deployment",
+  "version": "1.0.0",
+  "description": "Deployment with Heroku and Travis",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "jest -i --coverage",
+    "dbon": "mkdir -p ./db && mongod --dbpath ./db",
+    "dboff": "killall mongod",
+    "lint": "eslint",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "heroku",
+    "travisci",
+    "back-end-deployment"
+  ],
+  "author": "Kerry Nordstrom",
+  "license": "MIT",
+  "dependencies": {
+    "aws-sdk": "^2.175.0",
+    "bcrypt": "^1.0.3",
+    "body-parser": "^1.18.2",
+    "dotenv": "^4.0.0",
+    "express": "^4.16.2",
+    "fs-extra": "^5.0.0",
+    "http-errors": "^1.6.2",
+    "jsonwebtoken": "^8.1.0",
+    "mongoose": "^5.0.0-rc0",
+    "multer": "^1.3.0",
+    "winston": "^2.4.0"
+  },
+  "devDependencies": {
+    "aws-sdk-mock": "^1.7.0",
+    "faker": "^4.1.0",
+    "jest": "^22.0.4",
+    "superagent": "^3.8.2"
+  }
+}
