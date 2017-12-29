@@ -1,42 +1,56 @@
-![cf](https://i.imgur.com/7v5ASc8.png) Lab 21: Back-end Deployment
-======
+##Lab 17 - HTTP REST Server
 
-## Submission Instructions
-* Continue from previous authorization labs.
-* Submit on canvas a question and observation, how long you spent, and a link to your deployed application.
+##Objective
+To make a lightweight, RESTFUL server which has GET, POST, and DELETE CRUD methods and tests which verify common functionality of these methods.  Furthermore, a connection with a Mongo DB instance is created and information may be stored for later retrieval.  The object created for storage is a User Account with a schema identifying it via the username, email, passswordHash, and tokenSeed.  Mongo auto generates a unique ID and timestamp which follow the object into the DB.  This object is intended to only live on the server, where an upcoming Profile will live both on the server and client side.
 
-## Resources
-* [Deploing NodeJS Apps on Heroku](https://devcenter.heroku.com/articles/deploying-nodejs)
-* [Getting started with NodeJS on TravisCI](https://docs.travis-ci.com/user/languages/javascript-with-nodejs)
+#### Code Style
+-Node.js (ES6 notation where possible)
+-NPM Dependencies (body-parser, dotenv, express, mongoose, winston)
+-Development NPM packages (eslint, faker, jest, and superagent)
 
-## Feature Tasks  
-* Deploy the application built on lab 19 using Github/Heroku/Travis CI using the process illustrated in class.
-  * Use [mlab](https://elements.heroku.com/addons/mongolab) to add a MongoDB database to Heroku.
-* Link your deployed apllication to AWS using Heroku's environment variables.
+## How to Use
 
-## travis.yml sample
-Use the following .yml file as a starting point for your deployment. It sets up the addons required to use the libraries we have been using in class, and it sets up a node version supported by Heroku.
+To start this app, clone this repo from 
 
-```yml
-language: node_js
-node_js:
-  - '8.4.0'
-services:
-  - mongodb
-addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - gcc-4.8
-      - g++-4.8
-env:
-  - CXX=g++-4.8
-sudo: required
-before_script: npm i
-script:
-  - npm test
-```
+  `http://www.github.com/kerrynordstrom/16-19-auth`
 
-## Documentation
-Refactor the existing README.md to reflect changes done during deployment.
+install all necessary packages with 
+
+  `npm install`
+
+Start the Mongo DB server by running the command 
+
+  `npm dbon`
+
+And run any available tests with
+
+  `npm run test`
+
+##Middleware
+
+###Logging 
+Logging is handled by the logger middleware, which parses out request methods and URLs into log JSON and also to the console.  These details are generally removed from the base code and are required by express in the server file.
+
+###Error Handling
+
+Errors are handled by the error middleware, which parses out error statuses and messages into log JSON and also to the console.  These details are generally removed from the base code and are required by express in the server file.
+
+## Server Endpoints
+
+* `POST /signup`
+  * Creates another instance of an Account when stringified data is passed through POST route.
+  * Returns a 200 success status code and creates a user authentication token if passwordHash is created and inserted into DB.
+  * Returns a 400 failure status code if either the Username, Email, or passwordHash are missing from the request.
+  * Returns a 409 failure status code if any errors are found in the request unrelated to the request body.
+
+* `POST /profiles`
+  * Creates another instance of a Profile when stringified data is passed through POST route.
+  * Returns a 200 success status code and creates a new profile for a user if token passed via header correctly.
+  * Returns a 400 failure status code if the header is not set with the expected token.
+  * Returns a 401 error if an incorrect token is passed or is missing entirely.
+
+* `GET /profiles/:id`
+  * Passes a user provided token to confirm that they are a registered user and can view any profile with a correct id provided.
+  * Returns a 200 success status code and returns a profile at the specified ID if a token is passed via header correctly.
+  * Returns a 404 failure status code if an incorrect ID is passed via the get request.
+  * Returns a 401 failure status code if an incorrect token is passed or is missing entirely.
